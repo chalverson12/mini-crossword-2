@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Crossword Puzzle - Working Version</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .game-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .btn-primary { background: #4CAF50; color: white; }
+        .btn-secondary { background: #2196F3; color: white; }
+        .btn-warning { background: #FF9800; color: white; }
+
+        .game-area {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 30px;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+
+        .crossword-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .crossword-grid {
+            display: inline-grid;
+            gap: 2px;
+            background: #333;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .cell {
+            width: 40px;
+            height: 40px;
+            border: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .cell.white {
+            background: white;
+        }
+
+        .cell.black {
+            background: #333;
+            cursor: default;
+        }
+
+        .cell.white:hover {
+            background: #e3f2fd;
+        }
+
+        .cell.active {
+            background: #ffeb3b !important;
+            box-shadow: inset 0 0 0 3px #ffc107;
+        }
+
+        .cell.highlight {
+            background: #e8f5e8 !important;
+        }
+
+        .cell-number {
+            position: absolute;
+            top: 1px;
+            left: 2px;
+            font-size: 10px;
+            font-weight: bold;
+            color: #666;
+            line-height: 1;
+        }
+
+        .cell input {
+            width: 100%;
+            height: 100%;
+            border: none;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+            background: transparent;
+            outline: none;
+            text-transform: uppercase;
+        }
+
+        .clues-container {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            height: fit-content;
+        }
+
+        .clues-section {
+            margin-bottom: 25px;
+        }
+
+        .clues-section h3 {
+            color: #5e35b1;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            border-bottom: 2px solid #5e35b1;
+            padding-bottom: 5px;
+        }
+
+        .clues-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .clue {
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .clue:hover {
+            background: #e3f2fd;
+            transform: translateX(5px);
+        }
+
+        .clue.active {
+            background: #ffeb3b;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .clue-number {
+            font-weight: bold;
+            color: #5e35b1;
+            margin-right: 8px;
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .status-message {
+            font-weight: 600;
+            color: #5e35b1;
+        }
+
+        .timer {
+            font-weight: bold;
+            color: #333;
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 768px) {
+            .game-area {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .cell {
+                width: 35px;
+                height: 35px;
+                font-size: 16px;
+            }
+            
+            .cell input {
+                font-size: 16px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .status-bar {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🧩 Mini Crossword Puzzle</h1>
+            <div class="game-controls">
+                <button id="newGame" class="btn btn-primary">New Game</button>
+                <button id="checkAnswers" class="btn btn-secondary">Check Answers</button>
+                <button id="revealAnswers" class="btn btn-warning">Reveal Answers</button>
+            </div>
+        </header>
+
+        <main>
+            <div class="game-area">
+                <div class="crossword-container">
+                    <div id="crosswordGrid" class="crossword-grid"></div>
+                </div>
+                
+                <div class="clues-container">
+                    <div class="clues-section">
+                        <h3>Across</h3>
+                        <div id="acrossClues" class="clues-list"></div>
+                    </div>
+                    <div class="clues-section">
+                        <h3>Down</h3>
+                        <div id="downClues" class="clues-list"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="status-bar">
+                <div id="gameStatus" class="status-message">Loading game...</div>
+                <div id="timer" class="timer">Time: 00:00</div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Simple crossword game with embedded data
+        const puzzle = {
+            size: { rows: 5, cols: 5 },
+            grid: [
+                ['C', 'A', 'T', '#', '#'],
+                ['A', '#', 'H', '#', 'D'],
+                ['R', 'U', 'N', '#', 'O'],
+                ['#', '#', '#', '#', 'G'],
+                ['#', '#', '#', '#', '#']
+            ],
+            numbers: [
+                [1, 2, 3, 0, 0],
+                [4, 0, 5, 0, 6],
+                [7, 8, 9, 0, 10],
+                [0, 0, 0, 0, 11],
+                [0, 0, 0, 0, 0]
+            ],
+            clues: {
+                across: [
+                    { number: 1, clue: "Feline pet", answer: "CAT", startRow: 0, startCol: 0 },
+                    { number: 4, clue: "Vehicle", answer: "CAR", startRow: 1, startCol: 0 },
+                    { number: 7, clue: "Move quickly", answer: "RUN", startRow: 2, startCol: 0 }
+                ],
+                down: [
+                    { number: 2, clue: "Exist", answer: "ARE", startRow: 0, startCol: 1 },
+                    { number: 3, clue: "Pronoun", answer: "THE", startRow: 0, startCol: 2 },
+                    { number: 6, clue: "Canine", answer: "DOG", startRow: 1, startCol: 4 },
+                    { number: 8, clue: "Employ", answer: "USE", startRow: 2, startCol: 1 },
+                    { number: 9, clue: "Negative", answer: "NO", startRow: 2, startCol: 2 }
+                ]
+            }
+        };
+
+        let userAnswers = [];
+        let startTime = Date.now();
+        let timerInterval;
+
+        function initializeGame() {
+            console.log('Initializing game...');
+            
+            // Initialize user answers array
+            userAnswers = Array(puzzle.size.rows).fill().map(() => 
+                Array(puzzle.size.cols).fill('')
+            );
+            
+            renderGrid();
+            renderClues();
+            startTimer();
+            updateStatus('Click on a numbered cell to start!');
+            
+            console.log('Game initialized successfully!');
+        }
+
+        function renderGrid() {
+            console.log('Rendering grid...');
+            const gridElement = document.getElementById('crosswordGrid');
+            const { rows, cols } = puzzle.size;
+            
+            gridElement.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+            gridElement.innerHTML = '';
+
+            for (let row = 0; row < rows; row++) {
+                for (let col = 0; col < cols; col++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.dataset.row = row;
+                    cell.dataset.col = col;
+
+                    if (puzzle.grid[row][col] === '#') {
+                        cell.classList.add('black');
+                    } else {
+                        cell.classList.add('white');
+                        
+                        // Add number if this cell starts a word
+                        const number = puzzle.numbers[row][col];
+                        if (number > 0) {
+                            const numberSpan = document.createElement('span');
+                            numberSpan.className = 'cell-number';
+                            numberSpan.textContent = number;
+                            cell.appendChild(numberSpan);
+                        }
+
+                        // Add input field
+                        const input = document.createElement('input');
+                        input.type = 'text';
+                        input.maxLength = 1;
+                        input.dataset.row = row;
+                        input.dataset.col = col;
+                        cell.appendChild(input);
+                    }
+
+                    gridElement.appendChild(cell);
+                }
+            }
+            console.log('Grid rendered successfully!');
+        }
+
+        function renderClues() {
+            console.log('Rendering clues...');
+            const acrossClues = document.getElementById('acrossClues');
+            const downClues = document.getElementById('downClues');
+            
+            acrossClues.innerHTML = '';
+            downClues.innerHTML = '';
+
+            // Render across clues
+            puzzle.clues.across.forEach(clue => {
+                const clueElement = document.createElement('div');
+                clueElement.className = 'clue';
+                clueElement.innerHTML = `<span class="clue-number">${clue.number}.</span>${clue.clue}`;
+                acrossClues.appendChild(clueElement);
+            });
+
+            // Render down clues
+            puzzle.clues.down.forEach(clue => {
+                const clueElement = document.createElement('div');
+                clueElement.className = 'clue';
+                clueElement.innerHTML = `<span class="clue-number">${clue.number}.</span>${clue.clue}`;
+                downClues.appendChild(clueElement);
+            });
+            console.log('Clues rendered successfully!');
+        }
+
+        function checkAnswers() {
+            let correct = 0;
+            let total = 0;
+            
+            for (let row = 0; row < puzzle.size.rows; row++) {
+                for (let col = 0; col < puzzle.size.cols; col++) {
+                    if (puzzle.grid[row][col] !== '#') {
+                        total++;
+                        const input = document.querySelector(`input[data-row="${row}"][data-col="${col}"]`);
+                        const userAnswer = input ? input.value.toUpperCase() : '';
+                        const correctAnswer = puzzle.grid[row][col];
+                        
+                        if (userAnswer === correctAnswer) {
+                            correct++;
+                        }
+                    }
+                }
+            }
+            
+            const percentage = Math.round((correct / total) * 100);
+            updateStatus(`${correct}/${total} correct (${percentage}%)`);
+            
+            if (correct === total) {
+                updateStatus('🎉 Congratulations! Puzzle completed!');
+            }
+        }
+
+        function revealAnswers() {
+            for (let row = 0; row < puzzle.size.rows; row++) {
+                for (let col = 0; col < puzzle.size.cols; col++) {
+                    if (puzzle.grid[row][col] !== '#') {
+                        const input = document.querySelector(`input[data-row="${row}"][data-col="${col}"]`);
+                        if (input) {
+                            input.value = puzzle.grid[row][col];
+                        }
+                    }
+                }
+            }
+            updateStatus('All answers revealed!');
+        }
+
+        function newGame() {
+            // Reset all inputs
+            document.querySelectorAll('.cell input').forEach(input => {
+                input.value = '';
+            });
+            
+            // Reset timer
+            startTime = Date.now();
+            updateStatus('New game started! Click on a numbered cell to begin.');
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                const elapsed = Date.now() - startTime;
+                const minutes = Math.floor(elapsed / 60000);
+                const seconds = Math.floor((elapsed % 60000) / 1000);
+                document.getElementById('timer').textContent = 
+                    `Time: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function updateStatus(message) {
+            document.getElementById('gameStatus').textContent = message;
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM loaded, initializing game...');
+            initializeGame();
+            
+            // Button events
+            document.getElementById('newGame').addEventListener('click', newGame);
+            document.getElementById('checkAnswers').addEventListener('click', checkAnswers);
+            document.getElementById('revealAnswers').addEventListener('click', revealAnswers);
+        });
+
+        // Input handling
+        document.addEventListener('input', (e) => {
+            if (e.target.matches('.cell input')) {
+                e.target.value = e.target.value.toUpperCase();
+            }
+        });
+    </script>
+</body>
+</html>

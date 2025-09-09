@@ -91,6 +91,8 @@ h1 {
     padding: 10px;
     border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    min-width: 200px;
+    min-height: 200px;
 }
 
 .cell {
