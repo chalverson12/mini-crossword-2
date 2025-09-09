@@ -1,7 +1,11 @@
 # 🚀 Deployment Guide for Mini Crossword Puzzle
 
-## Quick Fix for Branch Protection Error
+## Quick Fixes for Deployment Errors
 
+### Fix for Deprecated Actions Error
+If you're seeing "deprecated version of actions/upload-artifact: v3", the workflows have been updated to use current versions.
+
+### Fix for Branch Protection Error
 If you're seeing the error "Branch is not allowed to deploy to github-pages due to environment protection rules", here are the solutions:
 
 ### Solution 1: Deploy from Branch (Easiest)
@@ -40,6 +44,12 @@ Make sure these files are in your repository root:
 - ✅ `styles.css` - Styling
 - ✅ `script.js` - Game logic
 - ✅ `README.md` - Documentation
+- ✅ `.github/workflows/` - Updated deployment workflows (no deprecated actions)
+
+### Updated Workflows Available:
+- `deploy.yml` - Main deployment workflow
+- `static.yml` - Alternative static deployment
+- `pages-simple.yml` - Simplified deployment option
 
 ## Testing Your Deployment
 
