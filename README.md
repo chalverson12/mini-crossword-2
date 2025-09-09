@@ -39,11 +39,26 @@ The game is automatically deployed to GitHub Pages. Once you push this repositor
 ### GitHub Pages Deployment
 This project is configured for automatic deployment to GitHub Pages:
 
+**Method 1: GitHub Actions (Recommended)**
 1. Push this repository to GitHub
 2. Go to your repository settings
 3. Navigate to "Pages" section
 4. Set source to "GitHub Actions"
 5. The site will be automatically deployed on every push to main/master branch
+
+**Method 2: If you encounter branch protection issues**
+1. Go to repository Settings → Pages
+2. Under "Source", select "Deploy from a branch"
+3. Choose "main" (or "master") branch
+4. Select "/ (root)" folder
+5. Click "Save"
+
+**Troubleshooting Deployment Issues:**
+- If you see "Branch not allowed to deploy" error:
+  - Try Method 2 above (deploy from branch instead of GitHub Actions)
+  - Or go to Settings → Environments → github-pages and remove any branch protection rules
+- Make sure your repository is public or you have GitHub Pro/Team for private repo Pages
+- Ensure the main/master branch contains all the game files
 
 ## 📁 Project Structure
 
