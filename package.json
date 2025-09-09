@@ -1,0 +1,30 @@
+{
+  "name": "mini-crossword-puzzle",
+  "version": "1.0.0",
+  "description": "A fun and interactive mini crossword puzzle game built with vanilla HTML, CSS, and JavaScript",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "serve": "python3 -m http.server 8000"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/[your-username]/mini-crossword-puzzle.git"
+  },
+  "keywords": [
+    "crossword",
+    "puzzle",
+    "game",
+    "word-game",
+    "javascript",
+    "html5",
+    "css3",
+    "browser-game"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/[your-username]/mini-crossword-puzzle/issues"
+  },
+  "homepage": "https://[your-username].github.io/mini-crossword-puzzle/"
+}
