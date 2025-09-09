@@ -107,8 +107,20 @@ class CrosswordGame {
     }
 
     renderGrid() {
+        console.log('renderGrid called');
         const gridElement = document.getElementById('crosswordGrid');
+        if (!gridElement) {
+            console.error('Grid element not found!');
+            return;
+        }
+        
+        if (!this.currentPuzzle) {
+            console.error('No current puzzle loaded!');
+            return;
+        }
+        
         const { rows, cols } = this.currentPuzzle.size;
+        console.log(`Rendering ${rows}x${cols} grid`);
         
         gridElement.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
         gridElement.innerHTML = '';
@@ -146,6 +158,7 @@ class CrosswordGame {
                 gridElement.appendChild(cell);
             }
         }
+        console.log(`Grid rendered successfully with ${rows * cols} cells`);
     }
 
     renderClues() {
@@ -509,5 +522,13 @@ class CrosswordGame {
 
 // Initialize the game when the page loads
 document.addEventListener('DOMContentLoaded', () => {
-    new CrosswordGame();
+    console.log('DOM loaded, starting crossword game...');
+    try {
+        const game = new CrosswordGame();
+        console.log('Crossword game initialized successfully!');
+        window.crosswordGame = game; // Make it globally accessible for debugging
+    } catch (error) {
+        console.error('Error initializing crossword game:', error);
+        document.getElementById('gameStatus').textContent = 'Error loading game. Check console for details.';
+    }
 });
