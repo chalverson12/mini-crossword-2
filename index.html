@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Crossword Puzzle</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🧩 Mini Crossword Puzzle</h1>
+            <div class="game-controls">
+                <button id="newGame" class="btn btn-primary">New Game</button>
+                <button id="checkAnswers" class="btn btn-secondary">Check Answers</button>
+                <button id="revealAnswers" class="btn btn-warning">Reveal Answers</button>
+            </div>
+        </header>
+
+        <main>
+            <div class="game-area">
+                <div class="crossword-container">
+                    <div id="crosswordGrid" class="crossword-grid"></div>
+                </div>
+                
+                <div class="clues-container">
+                    <div class="clues-section">
+                        <h3>Across</h3>
+                        <div id="acrossClues" class="clues-list"></div>
+                    </div>
+                    <div class="clues-section">
+                        <h3>Down</h3>
+                        <div id="downClues" class="clues-list"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="status-bar">
+                <div id="gameStatus" class="status-message">Click on a numbered cell to start!</div>
+                <div id="timer" class="timer">Time: 00:00</div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
